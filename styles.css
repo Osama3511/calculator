@@ -10,7 +10,7 @@ body {
     width: 100%;
     max-width: 450px;
     height: 600px;
-    background-color: black;
+    background-color: #010101;
     display: flex;
     flex-wrap: wrap;
     flex-direction: column;
@@ -53,14 +53,23 @@ body {
     font-size: 50px;
     justify-content: center;
     align-items: center;
+    background-color: #171717;
+    color: #aacad8;
     border: 3px solid black;
     border-radius: 50%;
 }
 
 .equals{
-    background-color: lightgreen;
+    background-color: #90b490;
+    color: #010101;
+}
+
+.operator {
+    color: #8fb38f;
 }
 
 .clear {
-    color: orangered;
+    color: #d8332a;
+    display: flex;
+    width: 225px;;
 }

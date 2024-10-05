@@ -6,26 +6,7 @@ let secondOperator = null;
 let displayValue = '0';
 let result = 0;
 
-// operation functions
 
-function add(num1,num2){
-    return num1 + num2;
-}
-
-function subtract(num1, num2){
-    return num1 - num2;
-}
-
-function multiply(num1, num2){
-    return num1 * num2;
-}
-
-function divide(num1, num2){
-    if(num2 === 0){
-        return "ERROR";
-    }
-    return ((num1 / num2)).toFixed(5);
-}
 
 // updates the display to show displayValue each time we change it
 function updateDisplay(){
@@ -35,7 +16,6 @@ function updateDisplay(){
     if(displayValue.length > 9){
         display.textContent = displayValue.slice(0,9);
     }
-
 }
 
 updateDisplay();
@@ -43,26 +23,29 @@ updateDisplay();
 const buttons = document.querySelectorAll("button");
 
 // goes through each button click
-buttons.forEach(button => {
-    button.addEventListener("click", (e) => {
-        if(button.classList.contains("operand")){
-            inputOperand(button.value);
-            updateDisplay();
-        }
-        else if(button.classList.contains("operator")){
-            inputOperator(button.value);
-        }
-        else if(button.classList.contains("clear")){
-            clearDisplay();
-            updateDisplay();
-        }
-        else if(button.classList.contains("equals")){
-            equals();
-            updateDisplay();
-        }
+function buttonClick(){
+    buttons.forEach(button => {
+        button.addEventListener("click", (e) => {
+            if(button.classList.contains("operand")){
+                inputOperand(button.value);
+                updateDisplay();
+            }
+            else if(button.classList.contains("operator")){
+                inputOperator(button.value);
+            }
+            else if(button.classList.contains("clear")){
+                clearDisplay();
+                updateDisplay();
+            }
+            else if(button.classList.contains("equals")){
+                equals();
+                updateDisplay();
+            }
+        });
     });
-});
+}
 
+buttonClick();
 
 
 function inputOperand(operand){
@@ -93,17 +76,26 @@ function inputOperand(operand){
 
 function inputOperator(operator){
     if(firstOperator != null && secondOperator == null){
+        // calculate the result with the first operator
         secondOperator = operator;
-        equals();
-        updateDisplay();
+        performCalculation();
+        result = null;
+        
     }
     else if(firstOperator != null && secondOperator != null){
-        let doddo = 13;
+        // calculate the result with the second operator and create a new operator
+        secondOperand = displayValue;
+        result = operate(Number(firstOperand),Number(secondOperand),secondOperator);
+        secondOperator = operator;
+        displayValue = result.toString();
+        firstOperand = displayValue;
+        result = null;
     }
     else{
         firstOperator = operator;
         firstOperand = displayValue;
     }
+    updateDisplay();
 }
 
 
@@ -113,40 +105,48 @@ function clearDisplay(){
     displayValue = '0';
 }
 
+
+function performCalculation(){
+    secondOperand = displayValue;
+    result = operate(Number(firstOperand),Number(secondOperand),firstOperator);
+    displayValue = result.toString();
+    firstOperand = displayValue;
+}
+
+
+function reset(){
+    firstOperator = null;
+    secondOperand = null;
+    secondOperator = null;
+    result = null;
+}
+
 function equals(){
     if(firstOperator === null){
-        displayValue = displayValue
+        return;
     }
     else if(secondOperator != null){
         secondOperand = displayValue;
-        result = caclulate(Number(firstOperand),Number(secondOperand),secondOperator);
+        result = operate(Number(firstOperand), Number(secondOperand),secondOperator);
         displayValue = result.toString();
         firstOperand = displayValue;
-        firstOperator = null;
-        secondOperand = null;
-        secondOperator = null;
-        result = null;
+        reset();
     }
     else{
-        secondOperand = displayValue;
-        result = caclulate(Number(firstOperand),Number(secondOperand),firstOperator);
-        displayValue = result.toString();
-        firstOperand = displayValue;
-        firstOperator = null;
-        secondOperand = null;
-        result = null;
+        performCalculation();
+        reset();
     }
 }
 
 
-function caclulate(num1, num2, op){
+function operate(num1, num2, op){
     if(op === '+'){
         return add(num1, num2);
     }
     else if(op === '-'){
         return subtract(num1, num2);
     }
-    else if(op === '*'){
+    else if(op === 'x'){
         return multiply(num1 ,num2);
     }
     else if(op === '/'){
@@ -154,3 +154,25 @@ function caclulate(num1, num2, op){
     }
 }
 
+
+function add(num1,num2){
+    return num1 + num2;
+}
+
+function subtract(num1, num2){
+    return num1 - num2;
+}
+
+function multiply(num1, num2){
+    return num1 * num2;
+}
+
+function divide(num1, num2){
+    if(num2 === 0){
+        return "ERROR";
+    }
+    if(num1 % num2 == 0){
+        return (num1 / num2);
+    }
+    return Number((num1 / num2)).toFixed(5);
+}
